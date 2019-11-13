@@ -1,0 +1,101 @@
+{% extends 'marketing_tool_lead_manager_app/base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+{% endblock stylesheets %}
+
+{% block headscript %}
+{% endblock headscript %}
+
+{% block content %}
+<div>
+  <h4> Lead Routes Details</h4>
+        <hr>
+        <table id="myTable" class="display" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Company Name</th>
+                    <th>Name</th>
+                    <th>Email Id</th>
+                    <th>Contact No</th>
+                    <th>Lead Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <th>Company Name</th>
+                    <th>Name</th>
+                    <th>Email Id</th>
+                    <th>Contact No</th>
+                    <th>Lead Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {% for value in leads %}
+                <tr>
+                    <td>{{value.City}}</td>
+                    <td>{{value.CompanyName}}</td>
+                    <td>{{value.Name}}</td>
+                    <td>{{value.EmailId}}</td>
+                    <td>{{value.ContactNo}}</td>
+                    <td>{{value.Lead_Status}}</td>
+                    <td><a href="{% url 'marketing_tool_lead_manager_app:view_leads' value.pk %}" class="update-lead btn btn-info" role="button">Edit</a></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>City</th>
+                    <th>Company Name</th>
+                    <th>Name</th>
+                    <th>Email Id</th>
+                    <th>Contact No</th>
+                    <th>Lead Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+{% endblock %}
+
+   {% block script %}
+   
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                orderCellsTop: true,
+                fixedHeader: true,
+                "lengthMenu": [
+                    [-1],
+                    ["All"]
+                ],
+                initComplete: function() {
+                    this.api().columns().every(function() {
+                        var column = this;
+                        var select = $('<select><option value=""></option></select>')
+                            .appendTo($(column.header()).empty())
+                            .on('change', function() {
+                                var val = $.fn.dataTable.util.escapeRegex(
+                                    $(this).val()
+                                );
+
+                                column
+                                    .search(val ? '^' + val + '$' : '', true, false)
+                                    .draw();
+                            });
+
+                        column.data().unique().sort().each(function(d, j) {
+                            select.append('<option value="' + d + '">' + d + '</option>')
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}
